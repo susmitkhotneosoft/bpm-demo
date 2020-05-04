@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="neosoft-process" name="Neosoft Process" isExecutable="true">
+    <startEvent id="Start" name="Start"></startEvent>
+    <userTask id="UserForm" name="User Form" activiti:candidateGroups="managers">
+      <extensionElements>
+        <activiti:formProperty id="name" name="Name" type="string"></activiti:formProperty>
+        <activiti:formProperty id="isUserAdmin" name="User Role" type="boolean"></activiti:formProperty>
+        <activiti:formProperty id="age" name="Age" type="long"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow1" sourceRef="Start" targetRef="UserForm"></sequenceFlow>
+    <exclusiveGateway id="Gateway1" name="Gateway1" default="automatedFlowPath"></exclusiveGateway>
+    <sequenceFlow id="decision" sourceRef="UserForm" targetRef="Gateway1"></sequenceFlow>
+    <sequenceFlow id="automatedFlowPath" sourceRef="Gateway1" targetRef="automatedFlow"></sequenceFlow>
+    <scriptTask id="automatedFlow" name="Admin User Automation Flow" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script>var dateAsString = new Date().toString();
+execution.setVariable("Admin User :: ", dateAsString);</script>
+    </scriptTask>
+    <userTask id="personalFlow" name="Non Admin User Flow" activiti:candidateGroups="managers">
+      <extensionElements>
+        <activiti:formProperty id="personalWelcomeTime" name="Personal Welcome Time" type="date"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="personalFlowPath" name="User role is not admin" sourceRef="Gateway1" targetRef="personalFlow">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isUserAdmin}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="End" name="End"></endEvent>
+    <sequenceFlow id="flow2" sourceRef="personalFlow" targetRef="End"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="automatedFlow" targetRef="End"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_neosoft-process">
+    <bpmndi:BPMNPlane bpmnElement="neosoft-process" id="BPMNPlane_neosoft-process">
+      <bpmndi:BPMNShape bpmnElement="Start" id="BPMNShape_Start">
+        <omgdc:Bounds height="35.0" width="35.0" x="50.0" y="101.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="UserForm" id="BPMNShape_UserForm">
+        <omgdc:Bounds height="55.0" width="105.0" x="130.0" y="91.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Gateway1" id="BPMNShape_Gateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="280.0" y="99.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="automatedFlow" id="BPMNShape_automatedFlow">
+        <omgdc:Bounds height="61.0" width="108.0" x="402.0" y="1.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="personalFlow" id="BPMNShape_personalFlow">
+        <omgdc:Bounds height="71.0" width="111.0" x="400.0" y="191.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="End" id="BPMNShape_End">
+        <omgdc:Bounds height="35.0" width="35.0" x="580.0" y="107.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="85.0" y="118.0"></omgdi:waypoint>
+        <omgdi:waypoint x="130.0" y="118.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="decision" id="BPMNEdge_decision">
+        <omgdi:waypoint x="235.0" y="118.0"></omgdi:waypoint>
+        <omgdi:waypoint x="280.0" y="119.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="automatedFlowPath" id="BPMNEdge_automatedFlowPath">
+        <omgdi:waypoint x="300.0" y="99.0"></omgdi:waypoint>
+        <omgdi:waypoint x="456.0" y="62.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="personalFlowPath" id="BPMNEdge_personalFlowPath">
+        <omgdi:waypoint x="300.0" y="139.0"></omgdi:waypoint>
+        <omgdi:waypoint x="455.0" y="191.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="42.0" width="100.0" x="270.0" y="167.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="455.0" y="191.0"></omgdi:waypoint>
+        <omgdi:waypoint x="597.0" y="142.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="456.0" y="62.0"></omgdi:waypoint>
+        <omgdi:waypoint x="597.0" y="107.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
